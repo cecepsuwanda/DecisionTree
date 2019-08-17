@@ -359,7 +359,12 @@ int main(int argc, const char * argv[]) {
 
 	string trainFileName = argv[1];
 	InputReader trainInputReader(trainFileName);
-	DecisionTree decisionTree(trainInputReader.getTable());
+	Table table = trainInputReader.getTable();
+	int jml_col = table.attrName.size();
+	int jml_row = table.data.size();
+	cout << jml_col;
+	cout << jml_row;
+	/*DecisionTree decisionTree(trainInputReader.getTable());
 
 	string testFileName = argv[2];
 	InputReader testInputReader(testFileName);
@@ -372,7 +377,7 @@ int main(int argc, const char * argv[]) {
 		vector<string> result = test.data[i];
 		result.push_back(decisionTree.guess(test.data[i]));
 		outputPrinter.addLine(outputPrinter.joinByTab(result));
-	}
+	}*/
 
 	/* for answer check */
 	/*
