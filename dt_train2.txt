@@ -1,0 +1,15 @@
+kehadiran	lingkungan	kerjasama	prakarsa	Class:rekomendasi
+rajin	kurang_peduli	mampu	tidak_inisiatif	tidak
+cukup	peduli	tidak_mampu	inisiatif	ya
+rajin	kurang_peduli	tidak_mampu	kurang_inisiatif	tidak
+rajin	peduli	mampu	inisiatif	ya
+rajin	peduli	mampu	inisiatif	ya
+cukup	peduli	tidak_mampu	inisiatif	ya
+kurang	peduli	tidak_mampu	inisiatif	ya
+rajin	peduli	tidak_mampu	kurang_inisiatif	ya
+rajin	peduli	mampu	inisiatif	ya
+kurang kurang_peduli	tidak_mampu	kurang_inisiatif	tidak
+cukup	peduli	mampu	kurang_inisiatif	tidak
+rajin	peduli	mampu	tidak_inisiatif	ya
+cukup	peduli	mampu	inisiatif	ya
+rajin	peduli	mampu	inisiatif	ya	
