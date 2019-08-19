@@ -89,7 +89,9 @@ class DecisionTree {
 		}
 
 		void run(Table table, int nodeIndex) {
-			if(isLeafNode(table) == true) {
+			
+		    if(isLeafNode(table) == true) {
+				cout << "Masuk \n";
 				tree[nodeIndex].isLeaf = true;
 				tree[nodeIndex].label = table.data.back().back();
 				return;
@@ -104,16 +106,16 @@ class DecisionTree {
 
 			tree[nodeIndex].criteriaAttrIndex = selectedAttrIndex;
 
-			pair<string, int> majority = getMajorityLabel(table);
+			/*pair<string, int> majority = getMajorityLabel(table);
 			if((double)majority.second/table.data.size() > 0.8) {
 				tree[nodeIndex].isLeaf = true;
 				tree[nodeIndex].label = majority.first;
 				return;
-			}
+			}*/
 
 			for(int i=0;i< initialTable.attrValueList[selectedAttrIndex].size(); i++) {
 				string attrValue = initialTable.attrValueList[selectedAttrIndex][i];
-
+                cout << attrValue ;
 				Table nextTable;
 				vector<int> candi = attrValueMap[attrValue];
 				for(int i=0;i<candi.size(); i++) {
@@ -128,10 +130,12 @@ class DecisionTree {
 
 				// for empty table
 				if(nextTable.data.size()==0) {
+					cout << " ; tabel kosong !!! \n";
 					nextNode.isLeaf = true;
 					nextNode.label = getMajorityLabel(table).first;
 					tree[nextNode.treeIndex] = nextNode;
 				} else {
+					cout << "; tabel tak kosong \n";
 					run(nextTable, nextNode.treeIndex);
 				}
 			}
@@ -174,6 +178,7 @@ class DecisionTree {
 		}
 
 		int getSelectedAttribute(Table table) {
+			cout << "getSelectedAttribute\n";
 			int maxAttrIndex = -1;
 			double maxAttrValue = 0.0;
 
@@ -184,12 +189,19 @@ class DecisionTree {
 					maxAttrIndex = i;
 				}
 			}
-
+            cout << "maxAttrValue: "<<maxAttrValue<<"; maxAttrIndex: "<<maxAttrIndex<<"\n";
 			return maxAttrIndex;
 		}
 
-		double getGainRatio(Table table, int attrIndex) {
-			return getGain(table, attrIndex)/getSplitInfoAttrD(table, attrIndex);
+		double getGainRatio(Table table, int attrIndex) {			
+			double hslgetGain = getGain(table, attrIndex);
+			double hslgetSplitInfoAttrD=getSplitInfoAttrD(table, attrIndex);			
+			double hslgetGainRatio=0;
+			if(hslgetSplitInfoAttrD>0){
+			  hslgetGainRatio=hslgetGain/hslgetSplitInfoAttrD;
+			}			
+			cout << "attrIndex: "<<attrIndex<<"; hslgetGain :"<<hslgetGain<<"; hslgetSplitInfoAttrD: "<<hslgetSplitInfoAttrD<<"; getGainRatio: "<< hslgetGainRatio <<"\n";
+			return hslgetGainRatio;
 		}
 
 		double getInfoD(Table table) {
@@ -201,14 +213,13 @@ class DecisionTree {
 			for(int i=0;i<table.data.size();i++) {
 				labelCount[table.data[i].back()]++;
 			}
-
+			
 			for(auto iter=labelCount.begin(); iter != labelCount.end(); iter++) {
 				double p = (double)iter->second/itemCount;
 
 				ret += -1.0 * p * log(p)/log(2);
 			}
-
-			return ret;
+            return ret;
 		}
 
 		double getInfoAttrD(Table table, int attrIndex) {
@@ -229,15 +240,14 @@ class DecisionTree {
 
 				ret += (double)nextItemCount/itemCount * getInfoD(nextTable);
 			}
-
-			return ret;
+            return ret;
 		}
 
 		double getGain(Table table, int attrIndex) {
 			return getInfoD(table)-getInfoAttrD(table, attrIndex);
 		}
 
-		double getSplitInfoAttrD(Table table, int attrIndex) {
+		double getSplitInfoAttrD(Table table, int attrIndex) {			
 			double ret = 0.0;
 
 			int itemCount = (int)table.data.size();
@@ -257,7 +267,7 @@ class DecisionTree {
 				double d = (double)nextItemCount/itemCount;
 				ret += -1.0 * d * log(d) / log(2);
 			}
-
+             
 			return ret;
 		}
 
@@ -295,7 +305,7 @@ class InputReader {
 		}
 		void parse() {
 			string str;
-			bool isAttrName = true;
+			bool isAttrName = true;			
 			while(!getline(fin, str).eof()){
 				vector<string> row;
 				int pre = 0;
@@ -303,13 +313,12 @@ class InputReader {
 					if(str[i] == '\t') {
 						string col = str.substr(pre, i-pre);
 
-						row.push_back(col);
+						row.push_back(col);						
 						pre = i+1;
 					}
 				}
-				string col = str.substr(pre, str.size()-pre-1);
-				row.push_back(col);
-
+				string col = str.substr(pre, str.size()-pre);
+				row.push_back(col);				
 				if(isAttrName) {
 					table.attrName = row;
 					isAttrName = false;
@@ -317,6 +326,7 @@ class InputReader {
 					table.data.push_back(row);
 				}
 			}
+			 
 		}
 		Table getTable() {
 			return table;
@@ -356,19 +366,19 @@ int main(int argc, const char * argv[]) {
 		cout << "Please follow this format. dt.exe [train.txt] [test.txt] [result.txt]";
 		return 0;
 	}
-
+    
+    cout << "baca data train: "<<argv[1]<<"\n"; 
 	string trainFileName = argv[1];
 	InputReader trainInputReader(trainFileName);
 	Table table = trainInputReader.getTable();
-	int jml_col = table.attrName.size();
-	int jml_row = table.data.size();
-	cout << jml_col;
-	cout << jml_row;
-	/*DecisionTree decisionTree(trainInputReader.getTable());
-
+	cout << "Buat tree : \n";	
+	DecisionTree decisionTree(trainInputReader.getTable());
+    
+    cout << "baca data test: "<<argv[2]<<"\n";
 	string testFileName = argv[2];
 	InputReader testInputReader(testFileName);
 	Table test = testInputReader.getTable();
+	int jml_col = test.attrName.size();
 
 	string resultFileName = argv[3];
 	OutputPrinter outputPrinter(resultFileName);
@@ -377,7 +387,7 @@ int main(int argc, const char * argv[]) {
 		vector<string> result = test.data[i];
 		result.push_back(decisionTree.guess(test.data[i]));
 		outputPrinter.addLine(outputPrinter.joinByTab(result));
-	}*/
+	}
 
 	/* for answer check */
 	/*
